@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import HeartFireworks from "./components/Fireworks";
 
 const images: string[] = [
   "/images/i1.jpg",
@@ -200,8 +201,9 @@ export default function Home() {
       )}
       {started && yesClicked && (
         <>
-          <h1>YAYYY 🥹❤️</h1>
-          <h2>It’s a date! 💘</h2>
+          <h1>She said YESSS!! 🥹❤️</h1>
+          <HeartFireworks />
+          <h2>So, It’s a date! 💘</h2>
           <Image
             src="/images/Final.gif"
             alt="Happy Valentine"
