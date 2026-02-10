@@ -59,27 +59,31 @@ export default function Home() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const launchFireworks = (): void => {
-    for (let i = 0; i < 80; i++) {
-      const spark = document.createElement("div");
-      spark.className = "firework";
+  for (let i = 0; i < 40; i++) {
+    const heart = document.createElement("div");
+    heart.className = "heart-firework";
 
-      const colors = ["#ff4d88", "#ffd700", "#00eaff", "#ffffff", "#ff8c00"];
-      spark.style.background =
-        colors[Math.floor(Math.random() * colors.length)];
+    const colors = ["#ff4d88", "#ff6fa5", "#ffd1dc", "#ff2f92"];
+    heart.style.background =
+      colors[Math.floor(Math.random() * colors.length)];
 
-      spark.style.left = `${Math.random() * 100}vw`;
-      spark.style.top = `${Math.random() * 100}vh`;
+    // random screen position
+    const x = Math.random() * window.innerWidth;
+    const y = Math.random() * window.innerHeight * 0.6;
 
-      spark.style.transform = `translate(
-      ${Math.random() * 200 - 100}px,
-      ${Math.random() * 200 - 100}px
-    )`;
+    heart.style.left = `${x}px`;
+    heart.style.top = `${y}px`;
 
-      document.body.appendChild(spark);
+    // explosion direction
+    heart.style.setProperty("--x", `${Math.random() * 200 - 100}px`);
+    heart.style.setProperty("--y", `${Math.random() * 200 - 100}px`);
 
-      setTimeout(() => spark.remove(), 1000);
-    }
-  };
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 1500);
+  }
+};
+
 
   useEffect(() => {
     const styleTag = document.createElement("style");
@@ -110,6 +114,16 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+  const style = document.createElement("style");
+  style.innerHTML = fireworkCSS;
+  document.head.appendChild(style);
+
+  return () => {
+    style.remove();
+  };
+}, []);
+
   const handleNo = (): void => {
     const randomImage = images[Math.floor(Math.random() * images.length)];
     setCurrentImage(randomImage);
@@ -125,21 +139,6 @@ export default function Home() {
     audioRef.current?.play();
     setStarted(true);
   };
-
-  if (yesClicked) {
-    return (
-      <main style={styles.container}>
-        <h1>YAYYY 🥹❤️</h1>
-        <h2>It’s a date! 💘</h2>
-        <Image
-          src="/images/Final.gif"
-          alt="Happy Valentine"
-          width={300}
-          height={300}
-        />
-      </main>
-    );
-  }
 
   return (
     <main style={styles.container}>
@@ -314,23 +313,45 @@ const crystalStyles = `
 `;
 
 const fireworkCSS = `
-@keyframes explode {
+@keyframes heart-float {
   0% {
-    transform: scale(0);
+    transform: scale(0) translate(0, 0);
     opacity: 1;
   }
   100% {
-    transform: scale(1.5);
+    transform: scale(1.2) translate(var(--x), var(--y));
     opacity: 0;
   }
 }
 
-.firework {
+.heart-firework {
   position: fixed;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  animation: explode 1s ease-out forwards;
+  width: 12px;
+  height: 12px;
+  background: #ff4d88;
+  transform: rotate(45deg);
+  animation: heart-float 1.4s ease-out forwards;
   pointer-events: none;
 }
+
+.heart-firework::before,
+.heart-firework::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #ff4d88;
+  border-radius: 50%;
+}
+
+.heart-firework::before {
+  top: -6px;
+  left: 0;
+}
+
+.heart-firework::after {
+  left: -6px;
+  top: 0;
+}
 `;
+
